@@ -1,0 +1,58 @@
+VLANs:
+        - {sw: 192.168.1.101, VLAN: 2}
+        - {sw: 192.168.1.101, VLAN: 3}
+        - {sw: 192.168.1.101, VLAN: 4}
+        - {sw: 192.168.1.101, VLAN: 999}
+        - {sw: 192.168.1.102, VLAN: 2}
+        - {sw: 192.168.1.102, VLAN: 3}
+        - {sw: 192.168.1.102, VLAN: 4}
+        - {sw: 192.168.1.102, VLAN: 999}
+        - {sw: 192.168.1.104, VLAN: 2}
+        - {sw: 192.168.1.104, VLAN: 3}
+        - {sw: 192.168.1.104, VLAN: 999}
+        - {sw: 192.168.1.105, VLAN: 2}
+        - {sw: 192.168.1.105, VLAN: 4}
+        - {sw: 192.168.1.105, VLAN: 999}
+
+
+TRUNK_PORTs:
+        - {sw: 192.168.1.101, INT: GigaBitEthernet0/0, LD: "2-4"}
+        - {sw: 192.168.1.101, INT: GigaBitEthernet0/1, LD: "2-3"}
+        - {sw: 192.168.1.101, INT: GigaBitEthernet0/3, LD: "2,4"}
+        - {sw: 192.168.1.102, INT: GigaBitEthernet0/0, LD: "2-4"}
+        - {sw: 192.168.1.102, INT: GigaBitEthernet0/1, LD: "2,4"}
+        - {sw: 192.168.1.102, INT: GigaBitEthernet0/2, LD: "2,4"}
+        - {sw: 192.168.1.104, INT: GigaBitEthernet0/1, LD: "2-3"}
+        - {sw: 192.168.1.104, INT: GigaBitEthernet0/2, LD: "2-3"}
+        - {sw: 192.168.1.105, INT: GigaBitEthernet0/1, LD: "2,4"}
+        - {sw: 192.168.1.105, INT: GigaBitEthernet0/3, LD: "2,4"}
+
+INTERFACEs:
+        - {sw: 192.168.1.101, INTER: 2, IP: 192.168.2.1, GP: "2", VRRPIP: 192.168.2.3, PRIORITY: 120}
+        - {sw: 192.168.1.101, INTER: 3, IP: 192.168.3.1, GP: "3", VRRPIP: 192.168.3.3, PRIORITY: 120}
+        - {sw: 192.168.1.101, INTER: 4, IP: 192.168.4.1, GP: "4", VRRPIP: 192.168.4.3, PRIORITY: 100}
+        - {sw: 192.168.1.102, INTER: 2, IP: 192.168.2.2, GP: "2", VRRPIP: 192.168.2.3, PRIORITY: 100}
+        - {sw: 192.168.1.102, INTER: 3, IP: 192.168.3.2, GP: "3", VRRPIP: 192.168.3.3, PRIORITY: 100}
+        - {sw: 192.168.1.102, INTER: 4, IP: 192.168.4.2, GP: "4", VRRPIP: 192.168.4.3, PRIORITY: 120}
+
+To_ASA:
+        - {sw: 192.168.1.101, INT: GigaBitEthernet2/0, IP: 10.1.1.2}
+        - {sw: 192.168.1.102, INT: GigaBitEthernet2/0, IP: 10.12.12.2}
+IP_SLA:
+        - {sw: 192.168.1.101, VLAN: 2}
+        - {sw: 192.168.1.102, VLAN: 3}
+
+Only_Distro:
+        - {sw: 192.168.1.101}
+        - {sw: 192.168.1.102}
+
+Only_Access:
+        - {sw: 192.168.1.104}
+        - {sw: 192.168.1.105}
+
+SW1:
+        - {sw: 192.168.1.101}
+SW2:
+        - {sw: 192.168.1.102}
+
+
