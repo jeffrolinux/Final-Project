@@ -1,0 +1,115 @@
+---
+- name: Configure Distribution Switches
+  hosts: BSwitches
+  gather_facts: False
+  connection: local
+  vars_files:
+          - /home/linux/vars.yml
+          - /home/linux/vars2.yml
+
+  tasks:
+
+      - name: Configure Provider to be used with Vault
+        set_fact:
+                provider:
+                        username: "{{ username }}"
+                        password: "{{ password }}"
+                        host: "{{ inventory_hostname }}"
+      - name: Create VLANs
+        ios_config:
+             provider: "{{provider}}"
+             lines:
+               - vlan {{item.VLAN}}
+        with_items:
+           - "{{VLANs}}"
+        when: (item.sw == inventory_hostname)
+
+      - name: Create Trunk Ports
+        ios_config:
+             provider: "{{provider}}"
+             lines:
+               - switchport trunk encapsulation dot1q
+               - switchport mode trunk
+               - switchport trunk allowed vlan {{item.LD}}
+               - switchport trunk native vlan 999
+             parents: interface {{item.INT}}
+        with_items:
+               - "{{TRUNK_PORTs}}"
+        when: (item.sw == inventory_hostname)
+
+      - name: Configuring VLAN interfaces
+
+        ios_config:
+             provider: "{{provider}}"
+             lines:
+               - ip address {{item.IP}} 255.255.255.0
+               - no shutdown
+               - vrrp {{item.GP}} ip {{item.VRRPIP}}
+               - vrrp {{item.GP}} priority {{item.PRIORITY}}
+             parents: interface vlan {{item.INTER}}
+        with_items:
+                - "{{INTERFACEs}}"
+        when: (item.sw == inventory_hostname)
+      - name: Configuring layer 3 interfaces To_ASA
+        ios_config:
+                provider: "{{provider}}"
+                lines:
+                  - no shutdown
+                  - no switchport
+                  - ip address {{item.IP}} 255.255.255.252
+                parents: interface {{item.INT}}
+        with_items: "{{To_ASA}}"
+        when: (item.sw == inventory_hostname)
+
+      - name: IP SLA for VRRP
+        ios_config:
+                provider: "{{provider}}"
+                lines:
+                  - icmp-echo {{ICMPdest}}
+                parents: ip sla 1
+                after:
+                  - ip sla schedule 1 start-time now life forever
+                  - track 1 ip sla 1 state
+        with_items: "{{Only_Distro}}"
+        when: (item.sw == inventory_hostname)
+
+      - name: VRRP tracking only for perticular VLAN
+          ios_config:
+                provider: "{{provider}}"
+                lines:
+                  - vrrp {{DECVLAN}} track 1 decrement 30
+                parents: interface vlan {{DECVLAN}}
+        with_items: "{{Only_Distro}}"
+        when: (item.sw == inventory_hostname)
+
+      - name: Root for VLAN 2-3,999 and matches up with VRRP
+        ios_config:
+                provider: "{{provider}}"
+                lines:
+                  - spanning-tree vlan 2-4,999 priority 0
+        with_items: "{{SW1}}"
+        when: (item.sw == inventory_hostname)
+
+      - name: Root for VLAN 4 and matches up with VRRP
+        ios_config:
+                provider: "{{provider}}"
+                lines:
+                  - spanning-tree vlan 4 priority 0
+        with_items: "{{SW2}}"
+        when: (item.sw == inventory_hostname)
+
+      - name: Configure EIGRP
+        ios_config:
+                provider: "{{provider}}"
+                lines:
+                  - network 10.0.0.0 0.15.255.255
+                  - network 192.168.0.0 0.0.7.255
+                parents: router eigrp 1
+        with_items: "{{Only_Distro}}"
+        when: (item.sw == inventory_hostname)
+
+      - name: Make sure our running-config becomes the startup-config when a change occurs
+        ios_config:
+             provider: "{{provider}}"
+             save_when: modified
+
