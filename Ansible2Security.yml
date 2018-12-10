@@ -1,0 +1,55 @@
+---
+- name: Configure Distribution Switches
+  hosts: ASwitches
+  gather_facts: False
+  connection: local
+  vars_files:
+          - /home/linux/vars.yml
+          - /home/linux/vars2.yml
+
+
+  tasks:
+      - name: Configure Provider to be used with Vault
+        set_fact:
+                provider:
+                        username: "{{ username }}"
+                        password: "{{ password }}"
+                        host: "{{ inventory_hostname }}"
+
+      - name: Trust Uplink Trunk ports for snooping, DAI DHCP
+        ios_config:
+                provider: "{{provider}}"
+                lines:
+                  - ip dhcp snooping trust
+                  - ip arp inspection trust
+                parents: interface {{item.INT}}
+        with_items: "{{TRUNK_PORTs}}"
+        when: (item.sw == inventory_hostname)
+
+      - name: Configuring Switches with Snooping, DAI
+        ios_config:
+                provider: "{{provider}}"
+                lines:
+                  - ip dhcp snooping
+                  - ip dhcp snooping vlan 2-4
+                  - ip arp inspection vlan 2-4
+
+      - name: Configure Access switches for a baseline INT security
+        ios_config:
+                provider: "{{provider}}"
+                lines:
+                  - switchport mode access
+                  - switchport nonegotiate
+                  - spanning-tree portfast
+                  - spanning-tree bpduguard enable
+                  - switchport port-security
+                  - switchport port-security maximum 2
+                  - switchport port-security aging type inactivity
+                  - switchport port-security aging time 5
+                  - no shutdown
+                  - ip verify source port-security
+                parents: int GigabitEthernet3/{{ item }}
+        with_sequence: start=0 end=3
+
+        #with_sequence: start=1 end=48 Would be used with 48 port switch
+
