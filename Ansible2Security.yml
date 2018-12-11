@@ -1,5 +1,5 @@
 ---
-- name: Configure Distribution Switches
+- name: Configure Access Switches
   hosts: ASwitches
   gather_facts: False
   connection: local
