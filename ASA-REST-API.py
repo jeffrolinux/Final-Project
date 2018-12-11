@@ -43,20 +43,6 @@ headers = {
 response = requests.request("PUT", url, data=payload, headers=headers, verify=False)
 print(response.text)
 
-
-#Configure Gig0/2 to SW2
-url = "https://192.168.1.103/api/interfaces/physical/GigabitEthernet0_API_SLASH_2"
-
-payload = "{\r\n  \"securityLevel\": 0,\r\n  \"kind\": \"object#GigabitInterface\",\r\n  \"channelGroupMode\": \"active\",\r\n  \"flowcontrolLow\": -1,\r\n  \"name\": \"To_SW2\",\r\n  \"duplex\": \"auto\",\r\n  \"forwardTrafficSFR\": false,\r\n  \"hardwareID\": \"GigabitEthernet0/2\",\r\n  \"mtu\": 1500,\r\n  \"lacpPriority\": -1,\r\n  \"flowcontrolHigh\": -1,\r\n  \"ipAddress\": {\r\n    \"ip\": {\r\n      \"kind\": \"IPv4Address\",\r\n      \"value\": \"10.12.12.1\"\r\n    },\r\n    \"kind\": \"StaticIP\",\r\n    \"netMask\": {\r\n      \"kind\": \"IPv4NetMask\",\r\n      \"value\": \"255.255.255.252\"\r\n    }\r\n  },\r\n  \"flowcontrolOn\": false,\r\n  \"shutdown\": false,\r\n  \"interfaceDesc\": \"Description added from Python\",\r\n  \"managementOnly\": false,\r\n  \"channelGroupID\": \"\",\r\n  \"speed\": \"auto\",\r\n  \"forwardTrafficCX\": false,\r\n  \"flowcontrolPeriod\": -1\r\n}"
-headers = {
-    'Accept': "application/json",
-    'Content-Type': "application/json",
-    'X-Auth-Token': token.headers["X-Auth-Token"],
-    'cache-control': "no-cache",
-    }
-
-response = requests.request("PUT", url, data=payload, headers=headers, verify=False)
-
 # Configure interface to SW2
 url = "https://192.168.1.103/api/interfaces/physical/GigabitEthernet0_API_SLASH_4"
  
