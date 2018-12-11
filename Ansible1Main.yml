@@ -50,6 +50,7 @@
         with_items:
                 - "{{INTERFACEs}}"
         when: (item.sw == inventory_hostname)
+        
       - name: Configuring layer 3 interfaces To_ASA
         ios_config:
                 provider: "{{provider}}"
@@ -57,7 +58,9 @@
                   - no shutdown
                   - no switchport
                   - ip address {{item.IP}} 255.255.255.252
+                  - ip verify unicast source reachable-via any allow-default
                 parents: interface {{item.INT}}
+                after: ip route 10.99.99.99 255.255.255.255 null0
         with_items: "{{To_ASA}}"
         when: (item.sw == inventory_hostname)
 
