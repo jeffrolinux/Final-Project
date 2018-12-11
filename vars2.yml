@@ -1,0 +1,12 @@
+---
+username: MyUsername
+password: MySHHHHhhh
+#ansible-vault encrypt vars2.yml; you can also use: edit, decypt, view. 
+#Prior to Ansible 2.4 
+#Prompting for password -> ansible-playbook --ask-vault-pass myfirstpb.yml
+#Using File -> ansible-playbook --vault-password-file /path/to/my/vault-password-file site.yml
+
+#For Ansible 2.4 and later
+Prompting for a password -> ansible-playbook --vault-id @prompt myfirstpb.yml
+# Using File- ansible-playbook --vault-id /path/to/my/vault-password-file site.yml
+# With latest version you can use multiple passwords. 
