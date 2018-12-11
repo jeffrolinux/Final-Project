@@ -1,5 +1,5 @@
 ---
-- name: Configure Distribution Switches
+- name: Configure Distribution and Access Switches
   hosts: BSwitches
   gather_facts: False
   connection: local
