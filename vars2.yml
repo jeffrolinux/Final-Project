@@ -7,6 +7,6 @@ password: MySHHHHhhh
 #Using File -> ansible-playbook --vault-password-file /path/to/my/vault-password-file site.yml
 
 #For Ansible 2.4 and later
-Prompting for a password -> ansible-playbook --vault-id @prompt myfirstpb.yml
+#Prompting for a password -> ansible-playbook --vault-id @prompt myfirstpb.yml
 # Using File- ansible-playbook --vault-id /path/to/my/vault-password-file site.yml
 # With latest version you can use multiple passwords. 
