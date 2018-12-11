@@ -39,6 +39,7 @@
                 provider: "{{provider}}"
                 lines:
                   - switchport mode access
+                  - switchport access vlan 2
                   - switchport nonegotiate
                   - spanning-tree portfast
                   - spanning-tree bpduguard enable
